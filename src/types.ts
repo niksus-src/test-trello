@@ -9,3 +9,20 @@ export type ActionsUnion<
   A extends Record<string, ActionFunc<R['payload']>>,
   R extends ReturnType<A[keyof A]> = ReturnType<A[keyof A]>
 > = R;
+
+export type Task = {
+  id: number,
+  text: string
+}
+
+export type List = {
+ id: number,
+ title: string,
+ tasks: Array<Task>
+}
+
+export type Board = {
+  id: number, 
+  listIds: Array<number>, 
+  title: string
+}

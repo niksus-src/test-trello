@@ -34,12 +34,13 @@ const initialState = {
         ]}
     ],
     boards: [
-        {id:1, listId:1, title:'Доска 1'},
-        {id:2, listId:2, title:'Доска 2'},
-        {id:3, listId:3, title:'Доска 3'}
+        {id:1, listIds: [1, 2], title:'Доска 1'},
+        {id:2, listIds: [3, 4], title:'Доска 2'},
+        {id:3, listIds: [5, 6], title:'Доска 3'}
     ]
 }
-function reducer(state=initialState, action:any) {
+
+function reducer(state = initialState, action:any) {
     switch (action.type) {
         case todoActionsConstants.up_title: 
             return {...state, lists: action.payload}
@@ -48,11 +49,17 @@ function reducer(state=initialState, action:any) {
         case todoActionsConstants.add_item: 
             return {...state, lists: action.payload}
         case todoActionsConstants.add_list: 
-            return {...state, lists: action.payload}
+            return {...state, lists: action.payload.newLists, boards:action.payload.newBoards}
         case todoActionsConstants.del_list: 
             return {...state, lists: action.payload} 
         case todoActionsConstants.reorder_task:
             return {...state, lists: action.payload}
+        case todoActionsConstants.add_board:
+            return {...state, boards: action.payload}
+        case todoActionsConstants.set_state:
+            return {...action.payload}
+        case todoActionsConstants.set_board:
+            return {...action.payload}
         default:
           return state
       }

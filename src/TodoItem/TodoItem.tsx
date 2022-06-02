@@ -46,7 +46,7 @@ function TodoItem(props: any) {
                                     <input
                                         key={task.id}
                                         value={
-                                            task.text==='Введите описание' ? null : task.text
+                                            task.text==='Введите описание' ? '' : task.text
                                         }
                                         placeholder={
                                             task.text==='Введите описание' ? 'Введите описание' : ''

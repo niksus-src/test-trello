@@ -5,10 +5,30 @@ import {State} from '../store'
 import { counterActions } from '../actions';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useParams } from "react-router-dom";
+import { useEffect } from 'react'
+import { Board, List } from '../types';
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const TodoList: React.FC<Props> = ({ lists, add_listTh, reorder_taskTh}) => {
+const TodoList: React.FC<Props> = ({ lists, add_listTh, reorder_taskTh, set_stateTh}) => {
+
+    useEffect(() => {
+        const localBoards = JSON.parse(localStorage.getItem("boards") || "{}") as Array<Board>,
+        localLists = JSON.parse(localStorage.getItem("lists") || "{}") as Array<List>
+        console.log('localB: ',localBoards, 'localL: ', localLists);
+        
+        let boards, listsBefore
+
+        if (Object.keys(localBoards).length && Object.keys(localLists).length ) {
+            console.log('setState');
+            
+            boards = localBoards
+            listsBefore = localLists
+            set_stateTh(boards, listsBefore)
+        } 
+    }, [])
+
+    let { boardId } = useParams() as any;
     const onDragEnd = (result:any) => {
         
         if (!result.destination) {
@@ -24,11 +44,8 @@ const TodoList: React.FC<Props> = ({ lists, add_listTh, reorder_taskTh}) => {
               currentIdTask = drop.index + 1
         
         reorder_taskTh(idList, idTask, currentIdList, currentIdTask)
-
       }
 
-    let { boardId } = useParams() as any;
-    console.log(boardId);
     
     return(
     <>
@@ -41,24 +58,30 @@ const TodoList: React.FC<Props> = ({ lists, add_listTh, reorder_taskTh}) => {
                                 title={list.title} 
                                 tasks={list.tasks} 
                                 id={list.id}
+                                idBoard={boardId}
                                 />
                         )
                     }
                 <div className="btn list-addList"
-                    onClick={()=>add_listTh()}>
+                    onClick={()=>add_listTh(boardId)}>
                     Добавить колонку</div>
             </DragDropContext>
         </div>
     </> )
 }
 
-const mapStateToProps = (state: State) => ({
-    lists: state.lists
-})
+const mapStateToProps = (state: State, boardId: any) => {
+
+    const boardIdlast = boardId.match.params.boardId;
+    const board = state.boards.find(board => board.id === Number(boardIdlast))
+    const lists = state.lists.filter(list => board?.listIds.includes(list.id))
+    return {lists}
+}
 
 const mapDispatchToProps = {
     add_listTh: counterActions.add_listTh,
-    reorder_taskTh: counterActions.reorder_taskTh
+    reorder_taskTh: counterActions.reorder_taskTh,
+    set_stateTh: counterActions.set_stateTh
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)
