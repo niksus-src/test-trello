@@ -10,6 +10,7 @@ const reorder_task = (copyState: any) => createAction('REORDER_TASK', copyState)
 const add_board = (copyState: any) => createAction('ADD_BOARD', copyState)
 const set_state = (copyState: any) => createAction('SET_STATE', copyState)
 const set_board = (copyState: any) => createAction('SET_BOARD', copyState)
+const del_task = (copyState: any) => createAction('DEL_TASK', copyState)
 
 const up_titleTh = (id: number, title: string): Thunk => (dispatch, getState) => {
     const lists = getState().lists
@@ -222,6 +223,27 @@ const set_boardTh = (boards: Array<Board>):Thunk => (dispatch, getState) => {
     dispatch(set_board(newState))
 }
 
+const del_taksTh = (idTask: number, idList: number):Thunk => (dispatch, getState) => {
+    console.log('TASK: ', idTask, 'LIST: ', idList);
+    
+    const lists = getState().lists
+
+    const newLists = lists.map(list => {
+        if(list.id === idList) {
+            const newTasks = list.tasks.filter(task => task.id !== idTask)
+
+            return {...list, tasks: newTasks}
+        }
+
+        return {...list}
+    })
+
+    
+    localStorage.setItem('lists', JSON.stringify(newLists))
+    dispatch(del_task(newLists))
+
+}
+
 export const counterActions = {
     up_titleTh,
     up_taskTh,
@@ -231,7 +253,8 @@ export const counterActions = {
     reorder_taskTh,
     add_boardTh,
     set_stateTh,
-    set_boardTh
+    set_boardTh,
+    del_taksTh
 }
 
 export const todoActionsConstants = {
@@ -243,5 +266,6 @@ export const todoActionsConstants = {
     reorder_task: "REORDER_TASK",
     add_board: "ADD_BOARD",
     set_state: "SET_STATE",
-    set_board: "SET_BOARD"
+    set_board: "SET_BOARD",
+    del_task: "DEL_TASK"
 }

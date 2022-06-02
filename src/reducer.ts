@@ -60,6 +60,8 @@ function reducer(state = initialState, action:any) {
             return {...action.payload}
         case todoActionsConstants.set_board:
             return {...action.payload}
+        case todoActionsConstants.del_task:
+            return {...state, lists: action.payload}
         default:
           return state
       }

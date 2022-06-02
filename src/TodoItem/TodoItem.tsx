@@ -6,7 +6,7 @@ import './todoItem.scss'
 
 function TodoItem(props: any) {
 
-    const { title, tasks, id, up_titleTh, up_descTh, add_itemTh, del_listTh } = props;
+    const { title, tasks, id, up_titleTh, up_descTh, add_itemTh, del_listTh, dal_taskTh } = props;
 
     return (
         <div className="item-container">
@@ -56,6 +56,10 @@ function TodoItem(props: any) {
                                         onChange={(e) => up_descTh(task.id - 1, id, e.target.value)}
                                     />
                                 <div className="dragg"></div>
+                                <div className="del-task"
+                                    onClick={()=>dal_taskTh(task.id, id)}
+                                    >
+                                    &#9746;</div>
                                 </div>
                             )
                         }
@@ -81,7 +85,8 @@ const mapDispatchToProps = {
     up_titleTh: counterActions.up_titleTh,
     up_descTh: counterActions.up_taskTh,
     add_itemTh: counterActions.add_itemTh,
-    del_listTh: counterActions.del_listTh
+    del_listTh: counterActions.del_listTh,
+    dal_taskTh: counterActions.del_taksTh
 }
 
 export default connect(null, mapDispatchToProps)(TodoItem)
