@@ -46,11 +46,20 @@ $bg-color: #ebecf0;
 .item-desc{
     font-size: 18px;
     padding: 10px;
-    margin-bottom: 10px;
+    width: 90%;
 }
 
 .item-addCard{
     cursor: pointer;
     color: $text-color;
     margin-top: 10px;
+}
+
+.input-cont{
+    padding-top: 10px;
+}
+
+.dragg{
+    width: auto;
+    height: auto;
 }

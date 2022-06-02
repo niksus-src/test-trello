@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { counterActions } from '../actions';
-import { State } from '../store';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+
 import './todoItem.scss'
 
 function TodoItem(props: any) {
@@ -14,49 +13,65 @@ function TodoItem(props: any) {
             <div className="item-top">
                 <input
                     className="form-control item-title"
-                    value={title}
+                    value={
+                        title==='Введите заголовок' ? '' : title
+                    }
+                    placeholder={
+                        title==='Введите заголовок' ? 'Введите заголовок' : ''
+                    }
                     type="text"
                     id={id}
                     onChange={(e) => { up_titleTh(id, e.target.value) }}
                 />
                 <div className="item-delete"
-                    onClick={() => del_listTh(id)}
-                >&#10006;</div>
+                    onClick={() => del_listTh(id)}>
+                    &#10006;
+                </div>
             </div>
-            <Droppable droppableId="droppable">
+
+            <Droppable droppableId={`${id}`}>
                 { provided => 
-                    <div 
+                    (<div 
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                     className="item-content" >
                     {
                         tasks.map((task: any, index: number) => (
-                        <Draggable key={task.id} draggableId="droppable" index={index}>
+                        <Draggable key={task.id} draggableId={`${id}_${task.id}`} index={index}>
                             { provided => (
                                 <div ref={provided.innerRef}
                                 {...provided.draggableProps}
-                                {...provided.dragHandleProps}>
+                                {...provided.dragHandleProps}
+                                className='input-cont'>
                                     <input
                                         key={task.id}
-                                        value={task.text}
+                                        value={
+                                            task.text==='Введите описание' ? null : task.text
+                                        }
+                                        placeholder={
+                                            task.text==='Введите описание' ? 'Введите описание' : ''
+                                        }
                                         className="form-control item-desc"
                                         id={id}
                                         onChange={(e) => up_descTh(task.id - 1, id, e.target.value)}
                                     />
+                                <div className="dragg"></div>
                                 </div>
-                                
                             )
                         }
-                        </Draggable>))
-}       </div>
-                    }
+                        </Draggable>
+                    ))}   
+                    {provided.placeholder}  
+                </div>)
+                }
+                
             </Droppable>
     
             <button
                 type="button"
                 className="btn item-addCard"
                 onClick={() => add_itemTh(id - 1)}>
-            Добавить задачу</button>
+                Добавить задачу</button>
         </div>
     )
 }

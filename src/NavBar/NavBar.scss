@@ -1,0 +1,29 @@
+$text-color: #FAFCFE;
+$bg-color: #3D99CE;
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100px;
+    background-color: #0581c9;
+    padding: 20px 0 20px 0;
+}
+
+.nav-container{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+}
+
+.nav-item{
+    margin-bottom: 10px;
+    color: $text-color;
+    text-align: center;
+    width: 100%;
+    height: auto;
+    background-color: $bg-color;
+    border-radius: 20px;
+}
