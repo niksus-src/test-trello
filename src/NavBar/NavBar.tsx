@@ -27,6 +27,7 @@ const NavBar: React.FC<Props> = ({boards, add_boardTh, set_boardTh}) => {
     return (
         <nav>
             <div className="nav-container">
+                <Link to="/main" className="nav-item btn">Главная</Link>
                 {
                     boards.map(board => {
                         return <Link to={`/${board.id}`} key={board.id} className="nav-item btn">
