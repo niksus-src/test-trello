@@ -9,6 +9,7 @@ nav {
     width: 100px;
     background-color: #0581c9;
     padding: 20px 0 20px 0;
+    z-index: 3;
 }
 
 .nav-container{
@@ -27,3 +28,140 @@ nav {
     background-color: $bg-color;
     border-radius: 20px;
 }
+
+.nav-btn_wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn{
+    position: relative;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 28px;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.nav-btn_line{
+    width: 40px;
+    height: 3px;
+    background-color: #ffff;
+    border-radius: 4px;
+    transform-origin: right;
+    transition: transform .5s;
+}
+.nav-boards_wrapper{
+    padding-left: 100px;
+    z-index: 1;
+    background-color: #0581C9;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+}
+
+.board{
+    width: auto;
+    margin: 0 10px 0 10px;
+}
+
+.btn-main{
+    margin-top: 45px;
+}
+
+.show-boards{
+    visibility: visible;
+}
+
+hr{
+    width: 100%;
+    height: 4px;
+    color: $text-color;
+}
+
+.slide-in-left {
+	animation: slide-in-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+.slide-in-right {
+	animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+ @keyframes slide-in-left {
+    0% {
+      transform: translateX(-1000px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+@keyframes slide-in-right {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-1000px);
+      opacity: 0;
+    }
+  }
+  
+  .nav-icon1{
+    width: 40px;
+    height: 30px;
+    position: relative;
+    margin: 0 auto;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+    span {
+        display: block;
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background: $text-color;
+        border-radius: 9px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: .25s ease-in-out;
+      }
+      span:nth-child(1) {
+        top: 0px;
+      }
+      
+      span:nth-child(2) {
+        top: 14px;
+      }
+      
+      span:nth-child(3) {
+        top: 28px;
+      }
+  }
+
+  .open span:nth-child(1) {
+    top: 18px;
+    transform: rotate(135deg);
+  }
+  
+  .open span:nth-child(2) {
+    opacity: 0;
+    left: 60px;
+  }
+  
+  .open span:nth-child(3) {
+    top: 18px;
+    transform: rotate(-135deg);
+  }

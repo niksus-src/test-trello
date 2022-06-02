@@ -1,8 +1,10 @@
-import TodoList from '../TodoList/TodoList'
-import NavBar from '../NavBar/NavBar';
+
+import './App.scss';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Main from '../Main/Main';
-import './App.scss';
+
+import TodoList from '../TodoList/TodoList'
+import NavBar from '../NavBar/NavBar';
 
 const App = () => {
   
