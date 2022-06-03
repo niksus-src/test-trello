@@ -74,6 +74,21 @@ nav {
     margin: 0 10px 0 10px;
 }
 
+.board-item{
+  margin: 0 10px 0 10px;
+  width: auto;
+  padding: 7px 10px;
+}
+
+.board-del{
+  margin-left: 8px;
+  transition: color .1s ease-in;
+  cursor: pointer;
+  &:hover{
+    color: red;
+  }
+}
+
 .btn-main{
     margin-top: 45px;
 }
@@ -94,6 +109,16 @@ hr{
 
 .slide-in-right {
 	animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+.nav-item-link{
+  
+  color: $text-color;
+  text-decoration: none;
+  transition: color .1s ease-in;
+  &:hover {
+    color: #000
+  }
 }
 
  @keyframes slide-in-left {
