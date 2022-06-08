@@ -121,6 +121,14 @@ hr{
   }
 }
 
+.nav-select{
+  color: $text-color;
+  background-color: $bg-color;
+  border: none;
+  
+  border-radius: 20px;
+}
+
  @keyframes slide-in-left {
     0% {
       transform: translateX(-1000px);

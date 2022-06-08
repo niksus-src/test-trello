@@ -12,7 +12,8 @@ export type ActionsUnion<
 
 export type Task = {
   id: number,
-  text: string
+  text: string,
+  dateCreate: string
 }
 
 export type List = {
@@ -23,6 +24,6 @@ export type List = {
 
 export type Board = {
   id: number, 
-  listIds: Array<number>, 
-  title: string
+  listIds: Array<number>,
+  background: string
 }

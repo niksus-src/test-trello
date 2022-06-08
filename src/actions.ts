@@ -1,4 +1,5 @@
 import { Board, Thunk, List } from "./types";
+import { Axios } from "axios";
 import { createAction } from "./actionFactory";
 
 const upTitle = (copyState: any) => createAction("UP_TITLE", copyState);
@@ -13,6 +14,9 @@ const addBoard = (copyState: any) => createAction("ADD_BOARD", copyState);
 const setState = (copyState: any) => createAction("SET_STATE", copyState);
 const delTask = (copyState: any) => createAction("DEL_TASK", copyState);
 const delBoard = (copyState: any) => createAction("DEL_BOARD", copyState);
+const setBgBoard = (copyState: any) => createAction("SET_BG_BOARD", copyState);
+const setLang = (copyState: any) => createAction("SET_LANG", copyState);
+const reorderList = (copyState: any) => createAction("REORDER_LIST", copyState);
 
 const upTitleTh =
   (id: number, title: string): Thunk =>
@@ -61,14 +65,22 @@ const addItemTh =
   (id: number): Thunk =>
   (dispatch, getState) => {
     const lists = getState().lists;
-
+    const newDate = new Date();
+    const indexList = lists.findIndex(list => {
+      if (list.id === id) return true
+      return false 
+    })
+    console.log(lists[indexList].tasks.length + 1,id,indexList);
+    
     const newItem = {
-      id: lists[id].tasks.length + 1,
-      text: "Введите описание",
+      id: lists[indexList].tasks.length + 1,
+      text: "",
+      dateCreate: `${newDate.getDate()}-${newDate.getHours()}`
     };
-
+    console.log(newItem);
+    
     const newLists = lists.map((list) => {
-      if (list.id === id + 1) {
+      if (list.id === id) {
         list.tasks = [...list.tasks, newItem];
       }
       return { ...list };
@@ -81,13 +93,20 @@ const addItemTh =
 const addListTh =
   (boardId: string): Thunk =>
   (dispatch, getState) => {
-    const lists = getState().lists,
-      boards = getState().boards;
-
+    const lists = getState().lists
+    const  boards = getState().boards
+    const indexBoard = boards.findIndex(board => {
+      if (board.id === Number(boardId)) return true
+      return false 
+    })
+    const  newDate = new Date()
+    const  listIds = getState().boards[indexBoard].listIds ? getState().boards[indexBoard].listIds.sort((a,b) => a - b) : [],
+      lastId = listIds.length ? listIds.at(-1) as number : Number(`${Number(boardId)}00`)
+    
     let newList = {
-        id: lists.length + 1,
-        title: "Введите заголовок",
-        tasks: [{ id: 1, text: "Введите описание" }],
+        id: lastId + 1,
+        title: "",
+        tasks: [{ id: 1, text: "", dateCreate: `${newDate.getDate()}-${newDate.getHours()}`}],
       },
       newLists = [...lists, newList];
 
@@ -100,7 +119,7 @@ const addListTh =
 
     localStorage.setItem("lists", JSON.stringify(newLists));
     localStorage.setItem("boards", JSON.stringify(newBoards));
-    dispatch(addList(newLists, newBoards));
+    dispatch(addList(newLists.sort((a,b) => a.id - b.id), newBoards));
   };
 
 const delListTh =
@@ -147,15 +166,22 @@ const reorderTaskTh =
     currentIdList: number,
     currentIdTask: number
   ): Thunk =>
-  (dispatch, getState) => {
-    const lists = getState().lists,
-      copyTask = { ...lists[idList].tasks[idTask - 1] },
-      equallyList = idList === currentIdList;
+  (dispatch, getState) => {    
+    console.log('idList: ',idList, 'idTask: ',idTask, 'currentIdList: ',currentIdList, 'currentIdTask: ',currentIdTask);
 
+    console.log('LOLIK', idList);
+    console.log('DOLBOEBIK', idTask);
+
+    const lists = getState().lists
+    //@ts-ignore
+    const copyTask = { ...lists.find(list => list.id === idList).tasks[idTask - 1] }
+    const equallyList = idList === currentIdList;
+    console.log(copyTask);
+    
     switch (equallyList) {
       case false: {
-        const newBeforeList = lists.map((list, index) => {
-          if (index === idList) {
+        const newBeforeList = lists.map((list) => {
+          if (list.id === idList) {
             //Удаление task из старого листа
             let newTasks = list.tasks.filter((task) => {
               return task.id !== idTask;
@@ -178,7 +204,7 @@ const reorderTaskTh =
             return { ...list, tasks: newTasks };
           } else {
             //Действия в листе, куда падает task
-            if (index === currentIdList) {
+            if (list.id === currentIdList) {
               copyTask.id = currentIdTask;
               let newTasks = [...list.tasks];
               if (currentIdTask === 1) {
@@ -219,7 +245,7 @@ const reorderTaskTh =
 
       case true:
         const newBeforeList = lists.map((list) => {
-          if (list.id === idList + 1) {
+          if (list.id === idList) {
             const newTasks = list.tasks.map((task) => {
               if (
                 idTask <= currentIdTask &&
@@ -259,11 +285,9 @@ const reorderTaskTh =
 
 const addBoardTh = (): Thunk => (dispatch, getState) => {
   const boards = getState().boards;
-
   const newBoard = {
-    id: boards.length + 1,
-    listIds: [],
-    title: `Доска ${boards.length + 1}`,
+    id: boards.length !== 0 ? boards[boards.length - 1].id + 1 : 1,
+    listIds: []
   };
 
   const newBoards = [...boards, newBoard];
@@ -275,7 +299,7 @@ const addBoardTh = (): Thunk => (dispatch, getState) => {
 const setStateTh =
   (boards: Array<Board> | null, lists: Array<List> | null): Thunk =>
   (dispatch, getState) => {
-    let newState = { lists: lists, boards: boards };
+    let newState = {...getState(), lists: lists, boards: boards };
 
     if (!boards) {
       newState = { ...newState, boards: getState().boards };
@@ -322,6 +346,74 @@ const delBoardTh =
     dispatch(delBoard(newBoards));
   };
 
+const setBgBoardTh =
+  (idBoard: number, url: string): Thunk =>
+  (dispatch, getState) => {
+    const boards = getState().boards,
+      newBoards = boards.map((board) => {
+        if (board.id === Number(idBoard)) {
+          console.log({ ...board, background: url });
+
+          return { ...board, background: url };
+        }
+
+        return { ...board };
+      });
+
+    localStorage.setItem("boards", JSON.stringify(newBoards));
+    dispatch(setBgBoard(newBoards));
+  };
+
+const setLangTh =
+  (lang: string): Thunk =>
+  (dispatch, getState) => {
+    dispatch(setLang(lang));
+  };
+
+const reorderListTh = (drag: number, drop: number, boardId: number, curIndex: number):Thunk => (dispatch, getState) => {
+  console.log('drag: ', drag, 'drop: ', drop, 'boardId: ', boardId, 'curInd: ', curIndex);  
+  const indexBoard = getState().boards.findIndex(board => {
+    if (board.id === Number(boardId)) return true
+    return false 
+  })
+  const listsIds = getState().boards[indexBoard].listIds
+  const  orderIds = Number(`${boardId + 1}00`)
+  const  actLists = getState().lists.filter(list => list.id !== drag && list.id < orderIds && list.id > orderIds - 100? true : false)
+
+  const  lists = getState().lists.filter(list => listsIds.indexOf(list.id) === -1? true : false)
+  const  copyIndex: any = getState().lists.findIndex((list,i) => {
+          if (list.id === curIndex) return true
+          return false
+        }),
+        copyList = {...getState().lists[copyIndex], id: drop}
+      console.log(copyList, copyIndex);
+
+      const newLists = actLists.map(list => {
+        if (
+          drag <= drop &&
+          list.id > drag &&
+          list.id <= drop
+        ) {
+          return { ...list, id: list.id - 1 };
+        } else if (
+          drag >= drop &&
+          list.id < drag &&
+          list.id >= drop
+        ) {
+          return { ...list, id: list.id + 1 };
+        } else if (list.id === drag) {
+          return { ...list, id: drop };
+        } else {
+          return { ...list };
+        }
+      })
+      console.log([...newLists, copyList]);
+      const newListsForDesk = [...newLists, copyList];
+      const newBeforeList = [...newListsForDesk.sort((a,b)=>a.id-b.id), ...lists]
+      localStorage.setItem("lists", JSON.stringify(newBeforeList));
+    dispatch(reorderList([...newBeforeList]))
+}
+
 export const counterActions = {
   upTitleTh,
   upTaskTh,
@@ -333,6 +425,9 @@ export const counterActions = {
   setStateTh,
   delTaksTh,
   delBoardTh,
+  setBgBoardTh,
+  setLangTh,
+  reorderListTh
 };
 
 export const todoActionsConstants = {
@@ -346,4 +441,7 @@ export const todoActionsConstants = {
   setState: "SET_STATE",
   delTask: "DEL_TASK",
   delBoard: "DEL_BOARD",
+  setBgBoard: "SET_BG_BOARD",
+  setLang: "SET_LANG",
+  reorderList: "REORDER_LIST"
 };

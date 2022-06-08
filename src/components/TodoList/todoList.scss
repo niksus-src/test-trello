@@ -4,11 +4,13 @@ $bg-color: #3D99CE;
 
 .list-container{
     padding-top: 70px;
-    max-width: 1512px;
+    max-width: 100%;
     margin: 0 auto;
     margin-left: 100px;
     display: flex;
     flex-wrap: wrap;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .list-addList{
@@ -16,5 +18,5 @@ $bg-color: #3D99CE;
     color: $text-color;
     background-color: $bg-color;
     margin: 25px 0px 0px 25px;
-    height: 100%;
+    height: min-content;
 }

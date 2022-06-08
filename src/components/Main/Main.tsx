@@ -1,7 +1,7 @@
+import { useState } from 'react'
 import mainStyle from './main.module.scss'
 
 const Main = () => {
-    console.log(mainStyle);
     
     return (
         <div className={mainStyle.main_container}>
@@ -13,3 +13,4 @@ const Main = () => {
 }
 
 export default Main
+
